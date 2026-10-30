@@ -8,8 +8,9 @@ A website that writes **calaveritas literarias**: the playful rhyming verses tra
 - Four tones (gentle, roast, sweet tribute, spooky) and he/she/they pronouns, with neutral Spanish wording for "they".
 - Download the verse as a PNG card, copy it, or share it.
 - Moderation on the way in and out: English and Spanish blocklists, plus prompt rules against cruelty.
-- Quality checks on the way out: lines where the model comments on its own verse are caught and the verse is rewritten, and Spanish verses must rhyme in true consonant rhyme (lines 2 and 4 of every stanza).
+- Quality checks on the way out, so a flawed verse is rewritten before anyone sees it (see [Verse checks](#verse-checks)).
 - Runs on any OpenAI-compatible endpoint: DigitalOcean serverless inference in production, or Gemma on your own machine with Ollama.
+- An honest note for Spanish users: the form says Gemma can make the odd language mistake.
 - Per-visitor rate limiting, with the visitor IPs hashed.
 - No accounts, no analytics, no cookies. Names, traits and verses are never stored.
 - A haunted "Noche de Ánimas" mode, for whoever clicks the candles.
@@ -25,6 +26,27 @@ Browser  ──POST /api/generate──▶  Netlify Function  ──▶  Digital
 - **Frontend:** vanilla TypeScript with Vite, in `src/`. It shows a loading popup while the verse is written, then the finished verse.
 - **Backend:** one Netlify Function, `netlify/functions/generate.ts`, using the shared code in `server/`. It validates the input, applies the rate limit (stored in Netlify Blobs), builds the prompt, and streams the verse from Gemma through the moderation and rhyme checks. The browser shows a candle until a verse has passed every check; rejected drafts never reach it.
 - The model access key stays on the server. The browser never calls the model directly.
+
+### Verse checks
+
+Every verse passes through these checks on the server. The browser only ever receives the verse that passed.
+
+| When | Check | If it fails |
+|---|---|---|
+| Each line, as it arrives | Blocklists (English and Spanish), also across line breaks | Rewrite once, then refuse |
+| Each line, as it arrives | The model commenting on its own verse ("Some lines need reshaping to hold the rhyme", "Perdón, empiezo de nuevo") or separator lines like `---` | Rewrite, up to 2 times, then show an error |
+| Whole verse, at the end | Empty verse | Rewrite |
+| Whole verse, at the end | Words run together, like "noCuenta" (brands and the visitor's own spellings are allowed) | Rewrite |
+| Whole verse, at the end | Spanish, "they" pronouns: gendered object pronouns like "la llevó" or "llevarlo" | Rewrite |
+| Whole verse, at the end | Spanish: lines 2 and 4 of every stanza must be a true consonant rhyme (`server/rhyme.ts`, from the stressed vowel, with Mexican seseo) | Rewrite |
+
+End-of-verse checks allow 2 rewrites; after that the last verse is kept, since it already passed moderation. The function logs the reason for each rewrite (for example `generate: rewriting verse (rhyme)`), never the visitor's input.
+
+### Known limitations
+
+- Gemma's Spanish rhymes reliably but is uneven: some lines are awkward or don't quite make sense, and the checks can't catch that. The form warns Spanish users.
+- English verses are not rhyme-checked; spelling doesn't predict English rhyme well enough.
+- Use a model without "thinking" (Gemma is fine). Thinking models such as Qwen 3.5 can spend the whole token budget reasoning and return an empty verse.
 
 ## Getting started
 
@@ -63,14 +85,14 @@ All settings are read on the server only. Never prefix them with `VITE_`, or Vit
 | Command | What it does |
 |---|---|
 | `npm run dev` | Site and function locally, with the browser opened for you |
-| `npm test` | Unit tests (moderation, rhyme, rate limiting, restart detection, …) |
+| `npm test` | Unit tests (moderation, verse checks, rhyme, model client, rate limiting, …) |
 | `npm run build` | Type-check and build the site into `dist/` |
 
 ## Project layout
 
 ```
 src/                  Frontend: form, result card, popup, theme, translations (src/i18n/)
-server/               Shared backend code: prompts, model client, moderation, rhyme, rate limit
+server/               Shared backend code: prompts, model client, moderation, verse checks, rhyme, rate limit
 netlify/functions/    The /api/generate function
 public/               Static files served as-is
 ```
