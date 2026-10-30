@@ -1,0 +1,84 @@
+{
+  "app": {
+    "title": "Generador de Calaveritas",
+    "tagline": "Versos juguetones de Día de Muertos para la gente que quieres.",
+    "candleHint": "Haz clic en las velas para el modo embrujado"
+  },
+  "language": {
+    "name": "Español",
+    "gatePrompt": "Elige tu idioma",
+    "toggleLabel": "Idioma"
+  },
+  "form": {
+    "optional": "(opcional)",
+    "commaHint": "Separa cada cosa con una coma.",
+    "name": {
+      "label": "¿Para quién es la calaverita?",
+      "required": "Escribe el nombre de la persona.",
+      "tooLong": "El nombre debe tener 40 caracteres o menos."
+    },
+    "pronouns": {
+      "legend": "Pronombres",
+      "he": "él",
+      "she": "ella",
+      "they": "elle",
+      "required": "Elige los pronombres para que el verso le quede bien."
+    },
+    "occupation": {
+      "label": "Oficio o pasatiempo",
+      "placeholder": "p. ej. enfermera, gamer, panadero",
+      "tooLong": "Usa 60 caracteres o menos."
+    },
+    "traits": {
+      "label": "Algunas manías o rasgos",
+      "placeholder": "p. ej. siempre llega tarde, ama el café, toca la guitarra",
+      "tooLong": "Usa 200 caracteres o menos."
+    },
+    "tone": {
+      "legend": "Tono",
+      "gentle": "Suave",
+      "roast": "Picante",
+      "sweet": "Homenaje tierno",
+      "spooky": "Escalofriante"
+    },
+    "submit": "Escribir mi calaverita"
+  },
+  "generate": {
+    "writing": "La Catrina está escribiendo…",
+    "cancel": "Cancelar",
+    "retry": "Intentar de nuevo",
+    "retryIn": "Intenta de nuevo en {time}",
+    "error": {
+      "blocked": "La Catrina no va a escribir eso. Las calaveritas se burlan con cariño: prueba con otros datos.",
+      "refused": "Esta vez a La Catrina no le salió un verso lo bastante amable. Intenta de nuevo o cambia los datos.",
+      "unavailable": "A La Catrina se le acabó la tinta y no pudo terminar tu calaverita.",
+      "busy": "La Catrina está muy ocupada. Intenta de nuevo en un momento.",
+      "timeout": "La Catrina se está tardando demasiado. Intentémoslo otra vez.",
+      "invalid": "Algo en el formulario necesita revisión.",
+      "rateLimited": "Escribiste muchas calaveritas en los últimos 10 minutos y La Catrina se está tomando un respiro. Podrás escribir otra en unos {minutes} min."
+    }
+  },
+  "card": {
+    "for": "Para",
+    "regenerate": "Escribir otra",
+    "copy": "Copiar",
+    "copied": "¡Copiado!",
+    "copyFailed": "No se pudo copiar. Selecciona el verso y cópialo a mano.",
+    "share": "Compartir",
+    "download": "Descargar imagen",
+    "downloadFailed": "No se pudo crear la imagen. Intenta de nuevo o toma una captura de pantalla de la tarjeta.",
+    "shareTitle": "Una calaverita para ti",
+    "shareVia": "Compartir en"
+  },
+  "footer": {
+    "credit": "Creado con pasión"
+  },
+  "scrollTop": {
+    "label": "Volver arriba"
+  },
+  "quota": {
+    "few": "Aviso: puedes escribir {count} calaveritas más en los próximos minutos.",
+    "one": "Aviso: puedes escribir 1 calaverita más en los próximos minutos.",
+    "none": "Esa fue tu última calaverita por ahora. Podrás escribir más en unos {minutes} min."
+  }
+}

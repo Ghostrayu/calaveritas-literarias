@@ -1,0 +1,84 @@
+{
+  "app": {
+    "title": "Calaverita Generator",
+    "tagline": "Playful \"Day of the Dead\" verses for the people you love.",
+    "candleHint": "Click candles for haunted mode"
+  },
+  "language": {
+    "name": "English",
+    "gatePrompt": "Choose your language",
+    "toggleLabel": "Language"
+  },
+  "form": {
+    "optional": "(optional)",
+    "commaHint": "Separate each item with a comma.",
+    "name": {
+      "label": "Who is the calaverita for?",
+      "required": "Enter your friend's name.",
+      "tooLong": "Keep the name to 40 characters or fewer."
+    },
+    "pronouns": {
+      "legend": "Pronouns",
+      "he": "he/him",
+      "she": "she/her",
+      "they": "they/them",
+      "required": "Choose pronouns so the verse fits your friend."
+    },
+    "occupation": {
+      "label": "Occupation or hobby",
+      "placeholder": "e.g. nurse, gamer, baker",
+      "tooLong": "Keep this to 60 characters or fewer."
+    },
+    "traits": {
+      "label": "A few traits or quirks",
+      "placeholder": "e.g. always late, loves coffee, plays guitar",
+      "tooLong": "Keep the traits to 200 characters or fewer."
+    },
+    "tone": {
+      "legend": "Tone",
+      "gentle": "Gentle",
+      "roast": "Roast",
+      "sweet": "Sweet tribute",
+      "spooky": "Spooky"
+    },
+    "submit": "Write my calaverita"
+  },
+  "generate": {
+    "writing": "La Catrina is writing…",
+    "cancel": "Cancel",
+    "retry": "Try again",
+    "retryIn": "Try again in {time}",
+    "error": {
+      "blocked": "La Catrina won't write that one. Calaveritas tease with love, so try different details.",
+      "refused": "La Catrina couldn't come up with a kind enough verse this time. Try again or change the details.",
+      "unavailable": "La Catrina ran out of ink and couldn't finish your calaverita.",
+      "busy": "La Catrina is very busy right now. Try again in a moment.",
+      "timeout": "La Catrina is taking too long. Let's try again.",
+      "invalid": "Something in the form needs a second look.",
+      "rateLimited": "You've written a lot of calaveritas in the last 10 minutes, so La Catrina is taking a breather. You can write another in about {minutes} min."
+    }
+  },
+  "card": {
+    "for": "For",
+    "regenerate": "Write another",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "copyFailed": "Couldn't copy. Select the verse and copy it by hand.",
+    "share": "Share",
+    "download": "Download image",
+    "downloadFailed": "Couldn't make the image. Try again, or take a screenshot of the card.",
+    "shareTitle": "A calaverita for you",
+    "shareVia": "Share on"
+  },
+  "footer": {
+    "credit": "Engineered with passion"
+  },
+  "scrollTop": {
+    "label": "Back to top"
+  },
+  "quota": {
+    "few": "Heads up: you can write {count} more calaveritas in the next few minutes.",
+    "one": "Heads up: you can write 1 more calaverita in the next few minutes.",
+    "none": "That was your last calaverita for now. You can write more in about {minutes} min."
+  }
+}
