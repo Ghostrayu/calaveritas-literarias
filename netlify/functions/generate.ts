@@ -1,5 +1,6 @@
+import type { VerseContext } from '../../server/final-check.ts'
 import { mockVerseChunks } from '../../server/mock-model.ts'
-import { DEFAULT_MODELS, ModelError, streamCompletion } from '../../server/model.ts'
+import { DEFAULT_BASE_URL, DEFAULT_MODEL, ModelError, streamCompletion } from '../../server/model.ts'
 import { isBlocked, moderatedVerse } from '../../server/moderation.ts'
 import { buildPrompt } from '../../server/prompt.ts'
 import { blobStore, DEFAULT_LIMIT, takeSlot, visitorKey, type RateDecision } from '../../server/rate-limit.ts'
@@ -78,13 +79,16 @@ export default async (req: Request, context: { ip?: string }): Promise<Response>
   if (process.env.USE_MOCK_MODEL === 'true') {
     start = async () => mockVerseChunks(parsed.input, lang, req.signal)
   } else {
-    const { ANTHROPIC_API_KEY, MODEL_NAME_ES, MODEL_NAME_EN } = process.env
-    if (!ANTHROPIC_API_KEY) {
-      console.error('generate: ANTHROPIC_API_KEY must be set (or USE_MOCK_MODEL=true)')
+    const { MODEL_ACCESS_KEY, MODEL_NAME, INFERENCE_BASE_URL } = process.env
+    if (!MODEL_ACCESS_KEY) {
+      console.error('generate: MODEL_ACCESS_KEY must be set (or USE_MOCK_MODEL=true)')
       return errorResponse(500, 'unavailable')
     }
-    const model = (lang === 'es' ? MODEL_NAME_ES : MODEL_NAME_EN) || DEFAULT_MODELS[lang]
-    const config = { apiKey: ANTHROPIC_API_KEY, model }
+    const config = {
+      apiKey: MODEL_ACCESS_KEY,
+      model: MODEL_NAME || DEFAULT_MODEL,
+      baseUrl: INFERENCE_BASE_URL || DEFAULT_BASE_URL,
+    }
     start = () => streamCompletion(config, buildPrompt(parsed.input, lang), req.signal)
   }
 
@@ -99,7 +103,8 @@ export default async (req: Request, context: { ip?: string }): Promise<Response>
     throw err
   }
 
-  return new Response(textStream(moderatedVerse(first, start, lang)), {
+  const verseContext: VerseContext = { lang, pronouns: parsed.input.pronouns, source: [name, occupation, traits].join('\n') }
+  return new Response(textStream(moderatedVerse(first, start, verseContext)), {
     headers: {
       'Content-Type': 'text/plain; charset=utf-8',
       'Cache-Control': 'no-store',

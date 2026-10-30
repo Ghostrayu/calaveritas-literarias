@@ -18,7 +18,7 @@ cp .env.example .env   # mock mode: no API key needed
 npm run dev
 ```
 
-Mock mode (`USE_MOCK_MODEL=true`) returns a canned verse, so you can work on everything except the verse quality without an Anthropic API key. Changes to the prompts in `server/prompt.ts` need a real key to test; see the README.
+Mock mode (`USE_MOCK_MODEL=true`) returns a canned verse, so you can work on everything except the verse quality without a model key. Changes to the prompts in `server/prompt.ts` need a real model to test: a DigitalOcean model access key, or Gemma running locally in Ollama. See the README.
 
 ## Making a change
 

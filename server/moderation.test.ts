@@ -144,6 +144,8 @@ describe('moderatedVerse', () => {
 
   const rhymed = 'Iba Rosa muy campante\ncon su pan y su café;\nvino la Flaca elegante:\ncon ella Rosa se fue.\n'
   const unrhymed = 'Llegó la Flaca a la casa\ncon su lista en la mano;\nAna no supo qué pasa\ny se fue con su hermana.\n'
+  const es = { lang: 'es', pronouns: 'she', source: 'Rosa' } as const
+  const en = { lang: 'en', pronouns: 'they', source: 'Sam' } as const
 
   it('drops a remark about the rhyme and rewrites', async () => {
     const out = await collect(
@@ -165,7 +167,7 @@ describe('moderatedVerse', () => {
           retries++
           return chunksOf(rhymed)
         },
-        'es',
+        es,
       ),
     )
     assert.equal(retries, 1)
@@ -181,7 +183,7 @@ describe('moderatedVerse', () => {
           retries++
           return chunksOf(unrhymed)
         },
-        'es',
+        es,
       ),
     )
     assert.equal(retries, 2)
@@ -190,7 +192,12 @@ describe('moderatedVerse', () => {
 
   it('skips the rhyme check for English', async () => {
     const verse = 'Death came for Sam\nwho sat on a chair\nshe took him away\nto the graveyard there\n'
-    const out = await collect(moderatedVerse(chunksOf(verse), async () => chunksOf(), 'en'))
+    const out = await collect(moderatedVerse(chunksOf(verse), async () => chunksOf(), en))
     assert.ok(!out.includes(STREAM_RESET))
+  })
+
+  it('rewrites an empty verse instead of accepting it', async () => {
+    const out = await collect(moderatedVerse(chunksOf(''), async () => chunksOf(rhymed), es))
+    assert.equal(out, `${STREAM_RESET}${rhymed}`)
   })
 })

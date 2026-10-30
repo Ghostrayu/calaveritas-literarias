@@ -88,6 +88,8 @@ export function renderForm(container: HTMLElement, onSubmit: (input: CalaveritaI
       <div class="choices">${choices('tone', TONES, 'gentle')}</div>
     </fieldset>
 
+    <p class="form__note" data-i18n="form.modelNote"></p>
+
     <button type="submit" class="submit" data-i18n="form.submit"></button>`
 
   const traits = form.querySelector<HTMLTextAreaElement>('#traits')!

@@ -834,6 +834,18 @@ h3 {
   accent-color: var(--noche);
 }
 
+.form__note {
+  margin: 0;
+  font-size: 1.0625rem;
+  font-style: italic;
+  color: var(--muted);
+}
+
+/* Spanish only: the English copy is empty. */
+.form__note:empty {
+  display: none;
+}
+
 .submit {
   padding: 0.875rem 1.5rem;
   font-size: 1.25rem;

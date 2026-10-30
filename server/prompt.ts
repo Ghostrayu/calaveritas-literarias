@@ -22,6 +22,8 @@ Forma:
 - Todos los versos son octosílabos: ocho sílabas métricas, contando la sinalefa y sumando una sílaba si el verso acaba en palabra aguda. Nada de versos largos que se salgan del ritmo; deben poder recitarse de corrido, como copla.
 - Rima en esquema ABAB o ABCB, y que sea rima consonante: desde la última vocal acentuada coinciden vocales y consonantes (campante/elegante, café/fue, panteón/montón). No cuentan las rimas a medias como «mano/hermana» o «funeral/jamás».
 - Si una rima no sale natural, cambia el verso completo. Nunca inventes palabras ni las tuerzas para que rimen, y nunca sacrifiques el sentido: cada verso dice algo claro y cada chiste se entiende a la primera.
+- Usa frases sencillas y concretas, en orden natural: quién hace qué. Cada cuarteta cuenta un momento de la historia, y la historia avanza de una cuarteta a la siguiente.
+- Usa solo palabras comunes del español de México, escritas completas y separadas por espacios. Nada de anglicismos innecesarios ni de palabras que no existen.
 
 Así suena una cuarteta bien medida y rimada (es solo para el ritmo, no copies sus palabras):
 Iba Rosa muy campante
@@ -59,7 +61,7 @@ Respuesta:
     he: 'Habla de la persona en masculino (el amigo, el difunto, muy campante).',
     she: 'Habla de la persona en femenino (la amiga, la difunta, muy campante).',
     they:
-      'Quien recibe la calaverita prefiere lenguaje neutral. No uses palabras con género para referirte a su persona: en lugar de «amigo» o «amiga» usa su nombre, «la persona», «quien» o un rodeo (por ejemplo, «quien tanto madrugaba» en vez de «el madrugador»). Tampoco uses formas terminadas en -e como «amigue» o «elle». Ojo con los pronombres de objeto: no digas «se lo llevó» ni «la halló» refiriéndote a su persona; repite su nombre («se llevó a Ale») o cambia la frase. La Catrina sí es femenina.',
+      'Quien recibe la calaverita prefiere lenguaje neutral. No uses palabras con género para referirte a su persona: en lugar de «amigo» o «amiga» usa su nombre, «la persona», «quien» o un rodeo (por ejemplo, «quien tanto madrugaba» en vez de «el madrugador»). Tampoco uses formas terminadas en -e como «amigue» o «elle». Ojo con los pronombres: nunca uses «él» ni «ella» para su persona, ni pronombres de objeto como «la llevó», «se lo llevó», «la halló», «llevarla» o «llevarlo»; repite su nombre («se llevó a Ale», «fue por Ale») o cambia la frase. La Catrina sí es femenina.',
   },
   angles: [
     'La Catrina llega por sorpresa justo cuando la persona está en lo suyo.',

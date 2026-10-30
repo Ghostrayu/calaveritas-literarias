@@ -10,7 +10,7 @@ Include what you found, how to reproduce it, and what an attacker could do with 
 
 For example:
 
-- Ways to get the Anthropic API key or other server settings.
+- Ways to get the model access key or other server settings.
 - Ways around the rate limit or the moderation that could run up API costs or produce abusive verses at scale.
 - Anything that stores, logs or leaks what visitors type.
 - Cross-site scripting or other ways to run code in a visitor's browser.

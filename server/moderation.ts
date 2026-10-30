@@ -1,9 +1,8 @@
 import { STREAM_FAILED, STREAM_REFUSED, STREAM_RESET } from '../src/stream-protocol.ts'
-import { cleanVerse } from '../src/verse.ts'
 import { EN_BLOCKLIST } from './blocklists/en.ts'
 import { ES_BLOCKLIST } from './blocklists/es.ts'
+import { finalProblem, type VerseContext } from './final-check.ts'
 import { isRestart } from './restarts.ts'
-import { spanishVerseRhymes } from './rhyme.ts'
 
 const LEET: Record<string, string> = { '0': 'o', '1': 'i', '3': 'e', '4': 'a', '5': 's', '7': 't', '8': 'b', '@': 'a', $: 's', '!': 'i' }
 
@@ -79,12 +78,12 @@ export function isBlocked(text: string): boolean {
 const MAX_RESTARTS = 2
 const MAX_REWRITES = 2
 
-type Outcome = 'ok' | 'blocked' | 'restarted' | 'unrhymed'
+type Outcome = 'ok' | 'blocked' | 'restarted' | 'rewrite'
 
 export async function* moderatedVerse(
   first: AsyncGenerator<string>,
   retry: () => Promise<AsyncGenerator<string>>,
-  lang?: 'en' | 'es',
+  context?: VerseContext,
 ): AsyncGenerator<string> {
   let blocked = 0
   let restarts = 0
@@ -92,10 +91,10 @@ export async function* moderatedVerse(
   for (let attempt = 0; ; attempt++) {
     if (attempt > 0) yield STREAM_RESET
     const chunks = attempt === 0 ? first : await retry()
-    const outcome = yield* checkedLines(chunks, lang)
+    const outcome = yield* checkedLines(chunks, context)
     if (outcome === 'ok') return
-    // Out of rewrites: the last verse is already on screen and free of remarks, so keep it.
-    if (outcome === 'unrhymed' && ++rewrites > MAX_REWRITES) return
+    // Out of rewrites: keep the last verse, which passed moderation and has no remarks.
+    if (outcome === 'rewrite' && ++rewrites > MAX_REWRITES) return
     if (outcome === 'blocked' && ++blocked === 2) break
     if (outcome === 'restarted' && ++restarts > MAX_RESTARTS) {
       yield STREAM_FAILED
@@ -105,12 +104,16 @@ export async function* moderatedVerse(
   yield STREAM_REFUSED
 }
 
-// Last check once the whole verse is in, before the stream closes: Spanish verses must rhyme.
-function finalCheck(verse: string, lang?: 'en' | 'es'): Outcome {
-  return lang === 'es' && !spanishVerseRhymes(cleanVerse(verse)) ? 'unrhymed' : 'ok'
+// Last check once the whole verse is in, before the stream closes.
+function finalCheck(verse: string, context?: VerseContext): Outcome {
+  if (!context) return 'ok'
+  const problem = finalProblem(verse, context)
+  if (!problem) return 'ok'
+  console.info(`generate: rewriting verse (${problem})`)
+  return 'rewrite'
 }
 
-async function* checkedLines(chunks: AsyncGenerator<string>, lang?: 'en' | 'es'): AsyncGenerator<string, Outcome> {
+async function* checkedLines(chunks: AsyncGenerator<string>, context?: VerseContext): AsyncGenerator<string, Outcome> {
   let pending = ''
   let previous = ''
   let sent = ''
@@ -140,7 +143,7 @@ async function* checkedLines(chunks: AsyncGenerator<string>, lang?: 'en' | 'es')
       yield pending
       sent += pending
     }
-    return finalCheck(sent, lang)
+    return finalCheck(sent, context)
   } finally {
     await chunks.return(undefined)
   }
