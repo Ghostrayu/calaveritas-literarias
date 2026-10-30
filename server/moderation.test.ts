@@ -141,4 +141,56 @@ describe('moderatedVerse', () => {
     assert.equal(retries, 2)
     assert.equal(out, `${STREAM_RESET}${STREAM_RESET}${STREAM_FAILED}`)
   })
+
+  const rhymed = 'Iba Rosa muy campante\ncon su pan y su café;\nvino la Flaca elegante:\ncon ella Rosa se fue.\n'
+  const unrhymed = 'Llegó la Flaca a la casa\ncon su lista en la mano;\nAna no supo qué pasa\ny se fue con su hermana.\n'
+
+  it('drops a remark about the rhyme and rewrites', async () => {
+    const out = await collect(
+      moderatedVerse(
+        chunksOf('Iba Rosa muy campante\n', '\n', '---\n', 'Some lines need reshaping to hold the rhyme.\n'),
+        async () => chunksOf(rhymed),
+      ),
+    )
+    assert.equal(out, `Iba Rosa muy campante\n\n${STREAM_RESET}${rhymed}`)
+    assert.ok(!out.includes('reshaping'))
+  })
+
+  it('rewrites a Spanish verse that fails the final rhyme check', async () => {
+    let retries = 0
+    const out = await collect(
+      moderatedVerse(
+        chunksOf(unrhymed),
+        async () => {
+          retries++
+          return chunksOf(rhymed)
+        },
+        'es',
+      ),
+    )
+    assert.equal(retries, 1)
+    assert.equal(out, `${unrhymed}${STREAM_RESET}${rhymed}`)
+  })
+
+  it('keeps the last verse once rhyme rewrites run out', async () => {
+    let retries = 0
+    const out = await collect(
+      moderatedVerse(
+        chunksOf(unrhymed),
+        async () => {
+          retries++
+          return chunksOf(unrhymed)
+        },
+        'es',
+      ),
+    )
+    assert.equal(retries, 2)
+    assert.equal(out, `${unrhymed}${STREAM_RESET}${unrhymed}${STREAM_RESET}${unrhymed}`)
+  })
+
+  it('skips the rhyme check for English', async () => {
+    const verse = 'Death came for Sam\nwho sat on a chair\nshe took him away\nto the graveyard there\n'
+    const out = await collect(moderatedVerse(chunksOf(verse), async () => chunksOf(), 'en'))
+    assert.ok(!out.includes(STREAM_RESET))
+  })
 })

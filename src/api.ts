@@ -1,7 +1,7 @@
 import type { Lang } from './i18n'
 import type { CalaveritaInput } from './input'
 import { STREAM_FAILED, STREAM_REFUSED, STREAM_RESET } from './stream-protocol'
-import { cleanVerse, completeLines } from './verse'
+import { cleanVerse } from './verse'
 
 export type GenerateErrorCode = 'blocked' | 'busy' | 'invalid' | 'rateLimited' | 'refused' | 'timeout' | 'unavailable'
 
@@ -27,7 +27,6 @@ const IDLE_TIMEOUT_MS = 20_000
 
 interface GenerateOptions {
   signal?: AbortSignal
-  onText?: (verseSoFar: string) => void
   onQuota?: (quota: Quota) => void
 }
 
@@ -52,7 +51,7 @@ function retryAfterSeconds(response: Response): number {
   return seconds > 0 ? seconds : 60
 }
 
-export async function generate(input: CalaveritaInput, lang: Lang, { signal, onText, onQuota }: GenerateOptions = {}): Promise<string> {
+export async function generate(input: CalaveritaInput, lang: Lang, { signal, onQuota }: GenerateOptions = {}): Promise<string> {
   const idle = new AbortController()
   let timer = setTimeout(() => idle.abort(), IDLE_TIMEOUT_MS)
   const resetTimer = () => {
@@ -83,9 +82,9 @@ export async function generate(input: CalaveritaInput, lang: Lang, { signal, onT
       if (raw.includes(STREAM_FAILED)) throw new GenerateError('unavailable')
       const reset = raw.lastIndexOf(STREAM_RESET)
       if (reset !== -1) raw = raw.slice(reset + 1)
-      onText?.(cleanVerse(completeLines(raw)))
     }
 
+    // Only the final verse is ever shown; drafts the server reset are discarded above.
     const verse = cleanVerse(raw)
     if (!verse) throw new GenerateError('unavailable')
     return verse

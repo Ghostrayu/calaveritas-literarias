@@ -46,7 +46,3 @@ export function cleanVerse(raw: string): string {
     .join('\n')
     .replace(/\n{3,}/g, '\n\n')
 }
-
-export function completeLines(raw: string): string {
-  return raw.slice(0, raw.lastIndexOf('\n') + 1)
-}

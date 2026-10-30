@@ -16,6 +16,15 @@ describe('isRestart', () => {
       'Ahora lo hago bien:',
       'Sorry, let me try that again.',
       'Scratch that — here is a revised version:',
+      'Some lines need reshaping to hold the rhyme.',
+      'SOME LINES NEED RESHAPING TO HOLD THE RHYME',
+      '(Some lines need reshaping to hold the rhyme)',
+      'Note: I adjusted the meter in the second stanza.',
+      'Algunos versos necesitan reajuste para sostener la rima.',
+      'La rima del tercer verso necesita ajuste.',
+      '---',
+      '***',
+      '—',
     ]) {
       assert.equal(isRestart(line), true, line)
     }
@@ -29,6 +38,12 @@ describe('isRestart', () => {
       'la Flaca le dijo: «Ya es hora, mi viejo».',
       'Sam begged for just one more day,',
       '"I\'m sorry," they said, "but my ferns need me!"',
+      'she kept the rhythm all night long,',
+      'and wrote her lines in the graveyard book',
+      'el poeta buscaba una rima',
+      'leyendo versos en el panteón',
+      '— ¡Ya me voy! —dijo Beto',
+      '',
     ]) {
       assert.equal(isRestart(line), false, line)
     }

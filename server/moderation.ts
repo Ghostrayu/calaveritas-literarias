@@ -1,7 +1,9 @@
 import { STREAM_FAILED, STREAM_REFUSED, STREAM_RESET } from '../src/stream-protocol.ts'
+import { cleanVerse } from '../src/verse.ts'
 import { EN_BLOCKLIST } from './blocklists/en.ts'
 import { ES_BLOCKLIST } from './blocklists/es.ts'
 import { isRestart } from './restarts.ts'
+import { spanishVerseRhymes } from './rhyme.ts'
 
 const LEET: Record<string, string> = { '0': 'o', '1': 'i', '3': 'e', '4': 'a', '5': 's', '7': 't', '8': 'b', '@': 'a', $: 's', '!': 'i' }
 
@@ -75,20 +77,25 @@ export function isBlocked(text: string): boolean {
 }
 
 const MAX_RESTARTS = 2
+const MAX_REWRITES = 2
 
-type Outcome = 'ok' | 'blocked' | 'restarted'
+type Outcome = 'ok' | 'blocked' | 'restarted' | 'unrhymed'
 
 export async function* moderatedVerse(
   first: AsyncGenerator<string>,
   retry: () => Promise<AsyncGenerator<string>>,
+  lang?: 'en' | 'es',
 ): AsyncGenerator<string> {
   let blocked = 0
   let restarts = 0
+  let rewrites = 0
   for (let attempt = 0; ; attempt++) {
     if (attempt > 0) yield STREAM_RESET
     const chunks = attempt === 0 ? first : await retry()
-    const outcome = yield* checkedLines(chunks)
+    const outcome = yield* checkedLines(chunks, lang)
     if (outcome === 'ok') return
+    // Out of rewrites: the last verse is already on screen and free of remarks, so keep it.
+    if (outcome === 'unrhymed' && ++rewrites > MAX_REWRITES) return
     if (outcome === 'blocked' && ++blocked === 2) break
     if (outcome === 'restarted' && ++restarts > MAX_RESTARTS) {
       yield STREAM_FAILED
@@ -98,9 +105,15 @@ export async function* moderatedVerse(
   yield STREAM_REFUSED
 }
 
-async function* checkedLines(chunks: AsyncGenerator<string>): AsyncGenerator<string, Outcome> {
+// Last check once the whole verse is in, before the stream closes: Spanish verses must rhyme.
+function finalCheck(verse: string, lang?: 'en' | 'es'): Outcome {
+  return lang === 'es' && !spanishVerseRhymes(cleanVerse(verse)) ? 'unrhymed' : 'ok'
+}
+
+async function* checkedLines(chunks: AsyncGenerator<string>, lang?: 'en' | 'es'): AsyncGenerator<string, Outcome> {
   let pending = ''
   let previous = ''
+  let sent = ''
   const check = (line: string): Outcome => {
     const blocked = isBlocked(`${previous} ${line}`)
     previous = line
@@ -118,14 +131,16 @@ async function* checkedLines(chunks: AsyncGenerator<string>): AsyncGenerator<str
         const outcome = check(line)
         if (outcome !== 'ok') return outcome
         yield line
+        sent += line
       }
     }
     if (pending) {
       const outcome = check(pending)
       if (outcome !== 'ok') return outcome
       yield pending
+      sent += pending
     }
-    return 'ok'
+    return finalCheck(sent, lang)
   } finally {
     await chunks.return(undefined)
   }

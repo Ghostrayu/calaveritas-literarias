@@ -99,7 +99,7 @@ export default async (req: Request, context: { ip?: string }): Promise<Response>
     throw err
   }
 
-  return new Response(textStream(moderatedVerse(first, start)), {
+  return new Response(textStream(moderatedVerse(first, start, lang)), {
     headers: {
       'Content-Type': 'text/plain; charset=utf-8',
       'Cache-Control': 'no-store',

@@ -44,7 +44,7 @@ Respeto:
 
 Respuesta:
 - Contesta únicamente con los versos, en texto plano.
-- Escribe una sola versión, la definitiva, de corrido. Nunca te corrijas, empieces de nuevo ni pidas disculpas en la respuesta.
+- Escribe una sola versión, la definitiva, de corrido. Nunca te corrijas, empieces de nuevo, pidas disculpas ni comentes la rima o la métrica en la respuesta.
 - Sin título, sin introducción, sin comentarios al final, sin comillas y sin markdown.`,
   tone: {
     gentle: 'Tono suave: bromas cariñosas y ligeras, como las que se hacen en la sobremesa con alguien querido.',
@@ -96,6 +96,7 @@ Kindness:
 
 Reply:
 - Reply with the verses only, as plain text.
+- Write one final version straight through. Never correct yourself, start over, apologize or comment on the rhyme or meter.
 - No title, no introduction, no closing remarks, no quotation marks and no markdown.`,
   tone: {
     gentle: 'Tone: gentle. Light, affectionate teasing, the kind you share over dinner with someone you love.',
