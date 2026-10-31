@@ -6,6 +6,19 @@
   directory = "netlify/functions"
   node_bundler = "esbuild"
 
+# Send the old .com domain to the .tech domain (must stay above other rules)
+[[redirects]]
+  from = "https://tucalaverita.com/*"
+  to = "https://tucalaverita.tech/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://www.tucalaverita.com/*"
+  to = "https://tucalaverita.tech/:splat"
+  status = 301
+  force = true
+
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/:splat"
